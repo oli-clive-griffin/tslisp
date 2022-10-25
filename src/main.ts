@@ -1,5 +1,4 @@
-import { List, parse } from "./nester"
-import { lex, Token } from "./lexer"
+import { lex, List, Token } from "./lexer"
 import { identity } from "lodash"
 
 const testCases = [
@@ -17,24 +16,39 @@ function main() {
   for (const testCase of testCases) {
     const [input] = testCase
     const lexed = lex(input)
-    // console.log(format(lexed))
-    const parsed = parse(lexed)
-    console.log(format(parsed))
+    console.log(format(lexed))
     // console.assert(JSON.stringify(actual) === JSON.stringify(expected), `Expected ${expected}, got ${actual}`)
   }
 }
 
-const format = identity // (o: List | Token[]) => {
-//   o
+const format = (l: List) => mapDeep((item) => {
+  switch(item.type) {
+    case 'number':
+    case 'string':
+      return item.value
+    case 'symbol':
+      return Symbol(item.value);
+  }
+}, l)
 
-// }
-
-const mapDeep = (f: (x: any) => any, x: any): any => {
+const mapDeep = (f: (x: any) => any, x: any[]): any => {
   if (Array.isArray(x)) {
     return x.map(y => mapDeep(f, y))
   } else {
     return f(x)
   }
 }
+
+// make mapDeep generic
+// make mapDeep work with nested arrays
+
+// const mapDeep = <T, U>(f: (x: T | T[]) => U | U[], x: T[]): (U | U[])[] => {
+//   if (Array.isArray(x)) {
+//     return x.map(y => mapDeep(f, y))
+//   } else {
+//     return f(x)
+//   }
+// }
+
 
 main()

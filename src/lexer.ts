@@ -1,3 +1,5 @@
+import { pushIntoDepth } from "./pushDeep"
+
 export type Token = (
   | { type: 'number', value: number }
   | { type: 'symbol', value: string }
@@ -9,18 +11,23 @@ export type List = Item[]
 const numberRegex = /^\d+$/
 const symbolRegex = /^[a-zA-Z]+$/
 
-export function lex(s: string): Token[] {
+export function lex(s: string): List {
   let i = 0
 
-  let tokens: Token[] = []
+  let list: List = [];
+  let depth = 0
 
   while (i < s.length) {
     const c = s[i]
 
     if (c === ' ') {
       i++
-    } else if (c === '(' || c === ')') {
-      tokens.push({ type: 'paren', value: c })
+    } else if (c === '(') {
+      pushIntoDepth([], list, depth)
+      i++
+
+    } else if (c === ')') {
+      depth--
       i++
     } else if (c === '"') {
       let string = ''
@@ -28,7 +35,8 @@ export function lex(s: string): Token[] {
         string += s[i]
         i++
       }
-      i++
+      i++ // skip the closing quote
+
     } else if (numberRegex.test(c)) {
       let numberString = ''
       while (numberRegex.test(s[i])) {
@@ -39,18 +47,20 @@ export function lex(s: string): Token[] {
       if (number === NaN)
         throw new Error('Invalid number')
 
-      tokens.push({ type: 'number', value: number })
+      pushIntoDepth({ type: 'number', value: number }, list, depth)
+
     } else if (symbolRegex.test(c)) {
       let symbol = ''
       while (symbolRegex.test(s[i])) {
         symbol += s[i]
         i++
       }
-      tokens.push({ type: 'symbol', value: symbol })
+      pushIntoDepth({ type: 'symbol', value: symbol }, list, depth)
+
     } else {
       throw new Error('Invalid token')
     }
   }
 
-  return tokens
+  return list
 }
