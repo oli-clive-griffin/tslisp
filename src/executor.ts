@@ -27,7 +27,7 @@ const resolve = (item: Item): ResolvedValue => {
 const resolveSymbol = (symbol: string) => {
   switch (symbol) {
     case 'quote':
-      return (x: any) => x
+      return (...x: any[]) => x
     case 'add':
       return (a: number, b: number) => a + b
     case 'subtract':
