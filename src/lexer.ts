@@ -1,14 +1,16 @@
-import { pushIntoDepth } from "./pushDeep"
+import { pushDeep } from "./pushDeep"
 
 export type Token = (
   | { type: 'number', value: number }
   | { type: 'symbol', value: string }
   | { type: 'string', value: string }
 )
+
 export type Item = List | Token
 export type List = Item[]
 
-const numberRegex = /^\d+$/
+const numberStartRegex = /^\d/
+const floatRegex = /^\d+\.\d+/
 const symbolRegex = /^[a-zA-Z]+$/
 
 export function lex(s: string): List {
@@ -27,7 +29,7 @@ export function lex(s: string): List {
     if (c === ' ') {
       i++
     } else if (c === '(') {
-      pushIntoDepth([], list, depth)
+      pushDeep([], list, depth)
       depth++
       i++
 
@@ -41,12 +43,19 @@ export function lex(s: string): List {
         string += s[i]
         i++
       }
-      pushIntoDepth({ type: 'string', value: string }, list, depth)
+      pushDeep({ type: 'string', value: string }, list, depth)
       i++ // skip the last "
 
-    } else if (numberRegex.test(c)) {
+    } else if (numberStartRegex.test(c)) {
       let numberString = ''
-      while (numberRegex.test(s[i])) {
+      let decimalPointsFound = 0
+      while (numberStartRegex.test(s[i]) || s[i] === '.') {
+        if (s[i] === '.') {
+          decimalPointsFound++
+          if (decimalPointsFound > 1) {
+            throw new Error(`Expected number, got ${s[i]}`)
+          }
+        }
         numberString += s[i]
         i++
       }
@@ -54,7 +63,7 @@ export function lex(s: string): List {
       if (number === NaN)
         throw new Error('Invalid number')
 
-      pushIntoDepth({ type: 'number', value: number }, list, depth)
+      pushDeep({ type: 'number', value: number }, list, depth)
 
     } else if (symbolRegex.test(c)) {
       let symbol = ''
@@ -62,7 +71,7 @@ export function lex(s: string): List {
         symbol += s[i]
         i++
       }
-      pushIntoDepth({ type: 'symbol', value: symbol }, list, depth)
+      pushDeep({ type: 'symbol', value: symbol }, list, depth)
 
     } else {
       throw new Error('Invalid token')

@@ -1,6 +1,6 @@
 import { range } from "lodash"
 
-export function pushIntoDepth(item: any, arr: any[], depth: number) {
+export function pushDeep(item: any, arr: any[], depth: number) {
   let innermost = arr
   for (const _ of range(depth)) {
     innermost = innermost[innermost.length - 1]
