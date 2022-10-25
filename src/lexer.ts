@@ -13,7 +13,7 @@ const numberRegex = /^\d/
 
 export function lex(s: string): List {
   if (s[0] !== '(' || s[s.length - 1] !== ')') {
-    throw new Error(`Expected string to start and end with '(', got ${s}`)
+    throw new Error(`Expected string to start with '(' and end with ')', got ${s[0]} and ${s[s.length - 1]}`)
   }
 
   let i = 1
