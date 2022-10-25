@@ -22,19 +22,17 @@ export function lex(s: string): List {
   let depth = 0
 
   while (i < s.length) {
-    const c = s[i]
-
-    if (c === ' ') {
+    if (s[i] === ' ') {
       i++
-    } else if (c === '(') {
+    } else if (s[i] === '(') {
       pushDeep([], list, depth)
       depth++
       i++
 
-    } else if (c === ')') {
+    } else if (s[i] === ')') {
       depth--
       i++
-    } else if (c === '"') {
+    } else if (s[i] === '"') {
       let string = ''
       i++ // skip the first "
       while (s[i] !== '"') {
@@ -44,7 +42,7 @@ export function lex(s: string): List {
       pushDeep({ type: 'string', value: string }, list, depth)
       i++ // skip the last "
 
-    } else if (numberRegex.test(c)) {
+    } else if (numberRegex.test(s[i])) {
       let numberString = ''
       let decimalPointsFound = 0
       while (numberRegex.test(s[i]) || s[i] === '.') {
@@ -63,10 +61,10 @@ export function lex(s: string): List {
 
       pushDeep({ type: 'number', value: number }, list, depth)
 
-    } else if (c !== " ") {
+    } else if (s[i] !== " ") {
 
       let symbol = '' // these two checks are a good example of why this should be a state machine
-      while (c !== ' ' && c !== '(' && c !== ')') {
+      while (s[i] != null && s[i] !== ' ' && s[i] !== '(' && s[i] !== ')') {
         symbol += s[i]
         i++
       }

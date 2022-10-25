@@ -30,7 +30,7 @@ const resolveSymbol = (symbol: string) => {
       return (...x: any[]) => x
     case '+':
     case 'add':
-      return (a: number, b: number) => a + b
+      return (...args: any[]) => args.reduce((a, b) => a + b, typeof args[0] === 'number' ? 0 : '')
     case '-':
     case 'subtract':
       return (a: number, b: number) => a - b
