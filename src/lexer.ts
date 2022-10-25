@@ -59,7 +59,7 @@ export function lex(s: string): List {
         numberString += s[i]
         i++
       }
-      const number = parseInt(numberString, 10)
+      const number = decimalPointsFound === 0 ? parseInt(numberString, 10) : parseFloat(numberString)
       if (number === NaN)
         throw new Error('Invalid number')
 
