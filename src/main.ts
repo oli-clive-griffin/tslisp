@@ -22,16 +22,25 @@ function walk(s: string) {
       state = 'number'
       current += c
     } else if (c === ' ') {
-      pushIntoDepth(current, items, depth)
+      if (state === 'number') {
+        pushIntoDepth(parseInt(current, 10), items, depth)
+      }
       state = 'space'
       current = ''
     } else if (c === '(') {
+      if (state !== 'space')
+        throw new Error('fuck')
+
       pushIntoDepth([], items, depth)
       state = 'paren'
+      current = ''
       depth++
     } else if (c === ')') {
-      pushIntoDepth(current, items, depth)
+      if (state === 'number') {
+        pushIntoDepth(parseInt(current, 10), items, depth)
+      }
       state = 'paren'
+      current = ''
       depth--
     }
   }
@@ -39,15 +48,17 @@ function walk(s: string) {
   return items
 }
 
-// const testCases = [
-//   '(1 2 3)',
-//   '(1 2 (3 4))',
-//   '(1 2 (3 4) 5)',
-//   '(1 2 (3 4) 5 6)',
-//   '(1 2 (3 4) 5 6 7)',
-//   '(1 2 (3 4) 5 6 7 8)',
-// ]
+const testCases = [
+  ['(1 2 3)', [1, 2, 3]],
+  ['(1 2 (3 4))', [1, 2, [3, 4]]],
+  ['(1 2 (3 4) 5)', [1, 2, [3, 4], 5]],
+  ['(1 2 (3 4) 5 (6 7))', [1, 2, [3, 4], 5, [6, 7]]],
+  ['(1 2 (3 4) 5 (6 7 (8 9)))', [1, 2, [3, 4], 5, [6, 7, [8, 9]]]],
+  ['(1 2 (3 4) 5 (6 7 (8 9) 10) 11)', [1, 2, [3, 4], 5, [6, 7, [8, 9], 10], 11]],
+] as const
 
-// for (const testCase of testCases) {
-//   console.log(walk(testCase))
-// }
+for (const testCase of testCases) {
+  const [input, expected] = testCase
+  const actual = walk(input)
+  console.assert(JSON.stringify(actual) === JSON.stringify(expected), `Expected ${expected}, got ${actual}`)
+}
