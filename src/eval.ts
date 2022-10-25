@@ -28,8 +28,10 @@ const resolveSymbol = (symbol: string) => {
   switch (symbol) {
     case 'quote':
       return (...x: any[]) => x
+    case '+':
     case 'add':
       return (a: number, b: number) => a + b
+    case '-':
     case 'subtract':
       return (a: number, b: number) => a - b
     default:

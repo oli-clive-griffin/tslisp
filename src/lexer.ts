@@ -9,9 +9,7 @@ export type Token = (
 export type Item = List | Token
 export type List = Item[]
 
-const numberStartRegex = /^\d/
-const floatRegex = /^\d+\.\d+/
-const symbolRegex = /^[a-zA-Z]+$/
+const numberRegex = /^\d/
 
 export function lex(s: string): List {
   if (s[0] !== '(' || s[s.length - 1] !== ')') {
@@ -46,10 +44,10 @@ export function lex(s: string): List {
       pushDeep({ type: 'string', value: string }, list, depth)
       i++ // skip the last "
 
-    } else if (numberStartRegex.test(c)) {
+    } else if (numberRegex.test(c)) {
       let numberString = ''
       let decimalPointsFound = 0
-      while (numberStartRegex.test(s[i]) || s[i] === '.') {
+      while (numberRegex.test(s[i]) || s[i] === '.') {
         if (s[i] === '.') {
           decimalPointsFound++
           if (decimalPointsFound > 1) {
@@ -65,9 +63,10 @@ export function lex(s: string): List {
 
       pushDeep({ type: 'number', value: number }, list, depth)
 
-    } else if (symbolRegex.test(c)) {
-      let symbol = ''
-      while (symbolRegex.test(s[i])) {
+    } else if (c !== " ") {
+
+      let symbol = '' // these two checks are a good example of why this should be a state machine
+      while (c !== ' ' && c !== '(' && c !== ')') {
         symbol += s[i]
         i++
       }

@@ -2,11 +2,12 @@ import { evalulate } from "./eval"
 import { lex, List } from "./lexer"
 
 const testCases = [
-  // '(quote 2 3)',
-  // '(add 1 2)',
+  '(quote 2 3)',
+  '(add 1 2)',
+  '(+ 1 2)',
   // '(add "con" "cat")',
   // '(add (add 2 3) (add 3 4))',
-  '(quote 2 3 4.22 5)',
+  // '(quote 2 3 4.22 5)',
   // '(1 2 (3 4) 5 (6 7))',
   // '(1 2 (3 4) 5 (6 7 (8 9)))',
   // '(1 2 (3 4) 5 (6 7 (8 9) 10) 11)',
