@@ -4,6 +4,7 @@ type ResolvedValue = number | string | Function
 
 export const evalulate = (list: List): ResolvedValue => {
   const [head, ...tail] = list.map(item => resolve(item)) 
+
   if (typeof head !== 'function')
     throw new Error(`Expected function, got ${head}`)
 
