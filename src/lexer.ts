@@ -12,7 +12,11 @@ const numberRegex = /^\d+$/
 const symbolRegex = /^[a-zA-Z]+$/
 
 export function lex(s: string): List {
-  let i = 0
+  if (s[0] !== '(' || s[s.length - 1] !== ')') {
+    throw new Error(`Expected string to start and end with '(', got ${s}`)
+  }
+
+  let i = 1
 
   let list: List = [];
   let depth = 0
@@ -24,6 +28,7 @@ export function lex(s: string): List {
       i++
     } else if (c === '(') {
       pushIntoDepth([], list, depth)
+      depth++
       i++
 
     } else if (c === ')') {
@@ -31,11 +36,13 @@ export function lex(s: string): List {
       i++
     } else if (c === '"') {
       let string = ''
+      i++ // skip the first "
       while (s[i] !== '"') {
         string += s[i]
         i++
       }
-      i++ // skip the closing quote
+      pushIntoDepth({ type: 'string', value: string }, list, depth)
+      i++ // skip the last "
 
     } else if (numberRegex.test(c)) {
       let numberString = ''

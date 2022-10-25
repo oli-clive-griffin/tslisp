@@ -1,39 +1,44 @@
-import { lex, List, Token } from "./lexer"
-import { identity } from "lodash"
+import { evalulate } from "./executor"
+import { lex, List } from "./lexer"
 
 const testCases = [
-  ['(1 2 3)', [1, 2, 3]],
-  ['(1 2 (3 4))', [1, 2, [3, 4]]],
-  ['(1 2 (3 4) 5)', [1, 2, [3, 4], 5]],
-  ['(1 2 (3 4) 5 (6 7))', [1, 2, [3, 4], 5, [6, 7]]],
-  ['(1 2 (3 4) 5 (6 7 (8 9)))', [1, 2, [3, 4], 5, [6, 7, [8, 9]]]],
-  ['(1 2 (3 4) 5 (6 7 (8 9) 10) 11)', [1, 2, [3, 4], 5, [6, 7, [8, 9], 10], 11]],
-  ['(1 "a" ("b" 4) 5 (6 7 (8 "c") 10) "d")', [1, 2, [3, 4], 5, [6, 7, [8, 9], 10], 11]],
-  ['(1 a (b 4) 5 (6 7 (8 c) 10) "d")', [1, 2, [3, 4], 5, [6, 7, [8, 9], 10], 11]],
-] as const
+  '(quote 2 3)',
+  '(add 1 2)',
+  '(add "con" "cat")',
+  '(add (add 2 3) (add 3 4))',
+  '(1 2 (3 4) 5)',
+  '(1 2 (3 4) 5 (6 7))',
+  '(1 2 (3 4) 5 (6 7 (8 9)))',
+  '(1 2 (3 4) 5 (6 7 (8 9) 10) 11)',
+  '(1 "a" ("b" 4) 5 (6 7 (8 "c") 10) "d")',
+  '(1 a (b 4) 5 (6 7 (8 c) 10) "d")',
+]
 
 function main() {
   for (const testCase of testCases) {
-    const [input] = testCase
-    const lexed = lex(input)
+
+    const lexed = lex(testCase)
     console.log(format(lexed))
-    // console.assert(JSON.stringify(actual) === JSON.stringify(expected), `Expected ${expected}, got ${actual}`)
+
+    const evaled = evalulate(lexed)
+    console.log(evaled)
   }
 }
 
-const format = (l: List) => mapDeep((item) => {
+const format = (l: List) => mapDeep(l, (item) => {
   switch(item.type) {
     case 'number':
     case 'string':
       return item.value
     case 'symbol':
-      return Symbol(item.value);
+      // return Symbol(item.value);
+      return '<' + item.value + '>'
   }
-}, l)
+})
 
-const mapDeep = (f: (x: any) => any, x: any[]): any => {
+const mapDeep = (x: any[], f: (x: any) => any): any => {
   if (Array.isArray(x)) {
-    return x.map(y => mapDeep(f, y))
+    return x.map(y => mapDeep(y, f))
   } else {
     return f(x)
   }
