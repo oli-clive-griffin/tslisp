@@ -1,4 +1,4 @@
-import { evalulate } from "./executor"
+import { evalulate } from "./eval"
 import { lex, List } from "./lexer"
 
 const testCases = [

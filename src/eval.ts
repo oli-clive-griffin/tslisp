@@ -3,7 +3,7 @@ import { Item, List } from "./lexer"
 type ResolvedValue = number | string | Function
 
 export const evalulate = (list: List): ResolvedValue => {
-  const [head, ...tail] = list.map(item => resolve(item)) 
+  const [head, ...tail] = list.map(item => resolveItem(item)) 
 
   if (typeof head !== 'function')
     throw new Error(`Expected function, got ${head}`)
@@ -11,7 +11,7 @@ export const evalulate = (list: List): ResolvedValue => {
   return head(...tail)
 }
 
-const resolve = (item: Item): ResolvedValue => {
+const resolveItem = (item: Item): ResolvedValue => {
   if (Array.isArray(item))
     return evalulate(item)
 
