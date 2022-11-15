@@ -1,40 +1,41 @@
-import { Item, List } from "./lexer"
+import { symbols } from "./symbols"
+import { Item, List } from "./types"
+import { mapDeep } from "./utils/mapDeep"
 
 type ResolvedValue = number | string | Function
 
-export const evalulate = (list: List): ResolvedValue => {
+
+
+// const expandMacros = (list: List) => {
+//   const [head, ...tail] = list
+
+//   // const resolvedHead = resolve(head) head.type === 'list') 
+// }
+
+export const evalulateList = (list: List): ResolvedValue => {
   const [head, ...tail] = list.map(item => resolveItem(item)) 
 
-  if (typeof head !== 'function')
+  if (typeof head !== 'function') // this is not actually correct, we should be able to resolve a function here
     throw new Error(`Expected function, got ${head}`)
 
   return head(...tail)
 }
 
 const resolveItem = (item: Item): ResolvedValue => {
-  if (Array.isArray(item))
-    return evalulate(item)
-
   switch (item.type) {
+    case 'list':
+      return evalulateList(item.value)
+    case 'symbol':
+      return resolveSymbol(item.value)
     case 'number':
     case 'string':
       return item.value
-    case 'symbol':
-      return resolveSymbol(item.value)
   }
 }
 
 const resolveSymbol = (symbol: string) => {
-  switch (symbol) {
-    case 'quote':
-      return (...x: any[]) => x
-    case '+':
-    case 'add':
-      return (...args: any[]) => args.reduce((a, b) => a + b, typeof args[0] === 'number' ? 0 : '')
-    case '-':
-    case 'subtract':
-      return (a: number, b: number) => a - b
-    default:
-      throw new Error(`Unknown symbol ${symbol}`)
-  }
+  const value = symbols.get(symbol)
+  if (value === undefined)
+    throw new Error(`Unknown symbol: ${symbol}`)
+  return value
 }

@@ -1,13 +1,5 @@
-import { pushDeep } from "./pushDeep"
-
-export type Token = (
-  | { type: 'number', value: number }
-  | { type: 'symbol', value: string }
-  | { type: 'string', value: string }
-)
-
-export type Item = List | Token
-export type List = Item[]
+import { List } from "./types";
+import { pushDeep } from "./utils/pushDeep"
 
 const numberRegex = /^\d/
 
@@ -75,5 +67,6 @@ export function lex(s: string): List {
     }
   }
 
-  return list
+  return list; //  mapDeep(list)
 }
+
