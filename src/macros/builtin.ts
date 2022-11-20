@@ -22,7 +22,9 @@ export const let_: LispMacro = {
     }))
 
     const processSymbol = (t: Token) => {
+
       if (t.type !== 'symbol') return t
+
       const sub = substitutionsMap.get(t.value)
       if (t.value)
     }

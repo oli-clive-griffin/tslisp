@@ -1,23 +1,23 @@
-import { List } from "./types";
+import { ParsedList } from "./types";
 import { pushDeep } from "./utils/pushDeep"
 
 const numberRegex = /^\d/
 
-export function lex(s: string): List {
+export function lex(s: string): ParsedList {
   if (s[0] !== '(' || s[s.length - 1] !== ')') {
     throw new Error(`Expected string to start with '(' and end with ')', got ${s[0]} and ${s[s.length - 1]}`)
   }
 
   let i = 1
 
-  let list: List = [];
+  let list: ParsedList = [];
   let depth = 0
 
   while (i < s.length) {
     if (s[i] === ' ') {
       i++
     } else if (s[i] === '(') {
-      pushDeep([], list, depth)
+      pushDeep([], list, depth) // todo this breaks the whole thing
       depth++
       i++
 

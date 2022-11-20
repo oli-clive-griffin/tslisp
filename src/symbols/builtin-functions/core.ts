@@ -1,41 +1,39 @@
-import { LispFunc } from "../../types"
-
 // math
-export const add: LispFunc = {
+export const add = {
   symbol: '+',
   value: (...args: any[]) => args.reduce((a, b) => a + b)
 }
-export const subtract: LispFunc = {
+export const subtract = {
   symbol: '-',
   value: (...args: any[]) => args.reduce((a, b) => a - b)
 }
-export const multiply: LispFunc = {
+export const multiply = {
   symbol: '*',
   value: (...args: any[]) => args.reduce((a, b) => a * b)
 }
-export const divide: LispFunc = {
+export const divide = {
   symbol: '/',
   value: (...args: any[]) => args.reduce((a, b) => a / b)
 }
 
 // list
-export const list: LispFunc = {
+export const list = {
   symbol: 'list',
   value: (...x: any[]) => x
 }
-export const cons: LispFunc = {
+export const cons = {
   symbol: 'cons',
   value: (a: any, b: any) => [a, b]
 }
-export const car: LispFunc = {
+export const car = {
   symbol: 'car',
   value: (a: any) => a[0]
 }
-export const cdr: LispFunc = {
+export const cdr = {
   symbol: 'cdr',
   value: (a: any) => a[1]
 }
-export const length: LispFunc = {
+export const length = {
   symbol: 'length',
   value: (a: any) => a.length
 }

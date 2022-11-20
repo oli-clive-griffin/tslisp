@@ -1,8 +1,9 @@
 import { isArray } from "lodash"
 
-export const mapDeep = (arr: any[], fn: Function): any[] => (
+type RecursiveArray<T> = Array<T | RecursiveArray<T>>
+
+export const mapDeep = <T, R>(arr: RecursiveArray<T>, fn: (item: T) => R): RecursiveArray<R> => (
   arr.map(item => isArray(item)
     ? mapDeep(item, fn)
     : fn(item))
 )
-

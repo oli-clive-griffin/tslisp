@@ -1,27 +1,28 @@
-export type Token = (
-  | { type: 'number', value: number }
+export type ParsedValue = (
+  | { type: 'list', value: ParsedList }
+  | { type: 'number-literal', value: number }
+  | { type: 'string-literal', value: string }
   | { type: 'symbol', value: string }
-  | { type: 'string', value: string }
 )
+export type ParsedList = ParsedValue[]
 
-export type Item = (
-  | { type: 'list', value: List }
-  | Token
+// export type OrMacro<T> = T | { macro: }
+
+// | {
+//   type: 'function',
+//   symbol: string
+//   value: (...args: any[]) => any,
+// }
+// | {
+//   type: 'macro',
+//   symbol: string
+//   value: (...args: SymbolicatedList) => MacroExpandedList,
+// }
+
+export type MacroExpandedValue = (
+  | { type: 'list', value: MacroExpandedValue[] }
+  | { type: 'number-literal'; value: number }
+  | { type: 'string-literal', value: string }
+  | { type: 'function', value: Function }
 )
-
-export type List = Item[]
-
-export type Symbol = (
-  | { type: 'macro', macro: LispMacro }
-  | { type: 'func', macro: LispFunc }
-)
-
-export type LispFunc = {
-  symbol: string
-  value: (...args: any[]) => any
-}
-
-export type LispMacro = {
-  symbol: string
-  value: (...args: List) => List
-}
+export type MacroExpandedList = MacroExpandedValue[]
