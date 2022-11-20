@@ -1,54 +1,25 @@
-import { reverse } from "lodash"
-import { lex } from "./lexer"
-import { functions } from "./symbols"
-import { ParsedValue as ParsedItem, MacroExpandedList, MacroExpandedValue, ParsedList } from "./types"
 
-const macros: Map<string, (...args: any[]) => ParsedList> = new Map([
-  ['reverse', reverse]
-  // ['->>', ]
-])
+import { parse } from "./parser"
+import { ParsedValue, ScopeItem } from "./types"
+import { coreFuncs } from './symbols/builtin-functions/core'
+import { expandMacros } from "./macros/expand-macros"
 
-function expandMacros(list: ParsedList): ParsedList {
-  const [head, ...tail] = list.map(item => item.type === 'list'
-    ? { type: 'list', value: expandMacros(item.value) } as const
-    : item
-  )
+type Scope = Map<string, ScopeItem>
 
-  if (head.type !== 'symbol') throw new Error()
+export const evalulateList = (list: ParsedValue[], scope: Scope): any => {
+  const [head, ...tail] = list.map(val => resolveItem(val, scope))
 
-  const macro = macros.get(head.value)
-
-  return macro ? macro(...tail) : [head, ...tail]
+  return head(...tail)
 }
 
-// export const evalulateList = (list: ParsedList) => {
-//   const [head, ...tail] = list.map(resolveItem)
-
-//   if (head.type !== 'function') throw new Error()
-
-//   return head.value(...tail)
-// }
-
-// const resolveItem = (item: ParsedItem): MacroExpandedValue => {
-//   if (item.type === 'list') return evalulateList(item.value)
-//   if (item.type === 'symbol') {
-//     const resolved = functions.get(item.value)
-//     if (!resolved) throw new Error()
-//     return { type: 'function', value: resolved.value }
-//   }
-//   return item
-// }
-
-
-const test = `
-  (->>)
-`
-
-// evalulateList(expandMacros(lex(test)))
-
-function main() {
-  console.log()
-  console.log(JSON.stringify(lex(test.trim()), null, 2))
+const resolveItem = (item: ParsedValue, scope: Scope) => {
+  switch(item.type) {
+    case 'list': return evalulateList(item.value, scope)
+    case 'symbol': {
+      const resolved = scope.get(item.value)
+      if (!resolved) throw new Error()
+      return resolved
+    }
+    default: return item.value
+  }
 }
-
-main()

@@ -1,40 +1,26 @@
-// math
-export const add = {
-  symbol: '+',
-  value: (...args: any[]) => args.reduce((a, b) => a + b)
-}
-export const subtract = {
-  symbol: '-',
-  value: (...args: any[]) => args.reduce((a, b) => a - b)
-}
-export const multiply = {
-  symbol: '*',
-  value: (...args: any[]) => args.reduce((a, b) => a * b)
-}
-export const divide = {
-  symbol: '/',
-  value: (...args: any[]) => args.reduce((a, b) => a / b)
-}
+const coreFuncs = new Map([
+  // math
+  ['+', (...args: any[]) => args.reduce((a, b) => a + b)],
+  ['-', (...args: any[]) => args.reduce((a, b) => a - b)],
+  ['*', (...args: any[]) => args.reduce((a, b) => a * b)],
+  ['/', (...args: any[]) => args.reduce((a, b) => a / b)],
+  ['inc', (a: number) => a + 1],
+  ['dec', (a: number) => a - 1],
 
-// list
-export const list = {
-  symbol: 'list',
-  value: (...x: any[]) => x
-}
-export const cons = {
-  symbol: 'cons',
-  value: (a: any, b: any) => [a, b]
-}
-export const car = {
-  symbol: 'car',
-  value: (a: any) => a[0]
-}
-export const cdr = {
-  symbol: 'cdr',
-  value: (a: any) => a[1]
-}
-export const length = {
-  symbol: 'length',
-  value: (a: any) => a.length
-}
+  // list
+  ['list', (...x: any[]) => x],
+  ['cons', (a: any, b: any) => [a, b]],
+  ['car', (a: any) => a[0]],
+  ['cdr', (a: any) => a[1]],
+  ['length', (a: any) => a.length],
 
+  // string
+  ['concat', (...args: any[]) => args.join('')],
+  ['split', (a: string, b: string) => a.split(b)],
+  ['join', (a: string, b: string[]) => b.join(a)],
+
+  // util
+  ['apply', (a: any, b: any) => a(...b)],
+])
+
+export { coreFuncs }

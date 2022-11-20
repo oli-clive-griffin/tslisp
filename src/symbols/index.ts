@@ -1,8 +1,19 @@
 import * as coreFunctions from './builtin-functions/core'
-import * as coreMacros from '../macros/builtin'
+import { Fun } from '../types'
 
-export const functions = new Map(Object.values(coreFunctions).map(f => [f.symbol, { type: 'func', value: f }] as const))
-export const macros = Object.values(coreMacros).map(f => [f.symbol, { type: 'macro', value: f }] as const)
+
+export { coreFunctions }
+// export const functions:  = new Map<string, Fun>(Object.values(coreFunctions).map((f): [string, Fun] =>
+//   [
+//     f.symbol,
+//     {
+//       type: 'function',
+//       value: f.value,
+//     }
+//   ]
+// ))
+
+// export const macros = new Object.values(coreMacros).map(f => [f.symbol, { type: 'macro', value: f }] as const)
 
 // const symbols: ResolvedSymbol[] = [...functions, ...macros]
 
